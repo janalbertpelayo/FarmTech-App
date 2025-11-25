@@ -5,7 +5,7 @@ export default function Dashboard() {
   const router = useRouter();
 
   const menu = [
-    { title: "🛒 Post Product", route: "/postproduct", color: "#4CAF50" },
+    { title: "🛒 Marketplace", route: "/marketplace", color: "#4CAF50" }, // NEW
     { title: "🛍️ My Products", route: "/products", color: "#4CAF50" },
     { title: "🚚 Logistics", route: "/logistics", color: "#4CAF50" },
     { title: "💰 Wallet", route: "/wallet", color: "#4CAF50" },
@@ -44,7 +44,7 @@ export default function Dashboard() {
       ))}
 
       <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-        <Text style={styles.logoutText}>🚪 Logout</Text>
+        <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </ScrollView>
   );

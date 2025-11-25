@@ -1,8 +1,8 @@
 // app/products.tsx
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { useProducts } from "../context/productcontext";
 import { useState } from "react";
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useProducts } from "../context/productcontext";
 
 export default function Products() {
   const router = useRouter();
@@ -24,8 +24,14 @@ export default function Products() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🛍️ My Products</Text>
-
+      <View style={styles.headerRow}>
+        <Text style={styles.title}>🛍️ My Products</Text>
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.postBtn} onPress={() => router.push("/postproduct")}>
+            <Text style={styles.postBtnText}>＋Post Product</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       {/* Tabs */}
       <View style={styles.tabs}>
         <TouchableOpacity
@@ -41,6 +47,13 @@ export default function Products() {
         >
           <Text style={[styles.tabText, activeTab === "Meat" && styles.activeText]}>🍖 Meat</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "Livestock" && styles.activeTab]}
+          onPress={() => setActiveTab("Livestock")}
+        >
+          <Text style={[styles.tabText, activeTab === "Livestock" && styles.activeText]}>🐄 Livestock</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Product List */}
@@ -49,14 +62,31 @@ export default function Products() {
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={<Text style={styles.empty}>No {activeTab} products yet.</Text>}
         renderItem={({ item }) => (
-          <View style={[styles.card, item.category === "Meat" && styles.meatCard]}>
+          <View style={[
+            styles.card,
+            item.category === "Meat" && styles.meatCard,
+            item.category === "Livestock" && styles.livestockCard
+          ]}>
             <Image source={{ uri: item.image }} style={styles.image} />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.quantity}>Qty: {item.quantity}</Text>
               <Text>{item.price}</Text>
               <Text style={styles.categoryTag}>
-                {item.category === "Meat" ? "🍖 Meat" : "🌾 Crop"}
+                {item.category === "Meat"
+                  ? "🍖 Meat"
+                  : item.category === "Livestock"
+                  ? "🐄 Livestock"
+                  : "🌾 Crop"}
               </Text>
+              {/* Show livestock info if applicable */}
+              {item.category === "Livestock" && (
+                <>
+                  <Text style={styles.livestockInfo}>Breed: {item.breed}</Text>
+                  <Text style={styles.livestockInfo}>Age: {item.age}</Text>
+                  <Text style={styles.livestockInfo}>Gender: {item.gender}</Text>
+                </>
+              )}
             </View>
             <TouchableOpacity onPress={() => handleRemove(item.id, item.name)}>
               <Text style={styles.removeBtn}>🗑️</Text>
@@ -65,8 +95,11 @@ export default function Products() {
         )}
       />
 
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.backText}>⬅ Back</Text>
+      <TouchableOpacity
+        style={styles.backBottomBtn}
+        onPress={() => router.back()}
+      >
+        <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
     </View>
   );
@@ -74,7 +107,13 @@ export default function Products() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 15, color: "#2E7D32" },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  title: { fontSize: 22, fontWeight: "bold", color: "#2E7D32" },
   tabs: { flexDirection: "row", marginBottom: 15 },
   tab: {
     flex: 1,
@@ -96,10 +135,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   meatCard: { borderColor: "#E53935" },
-  image: { width: 60, height: 60, borderRadius: 6, marginRight: 10 },
-  name: { fontWeight: "bold", fontSize: 16 },
-  categoryTag: { fontSize: 13, color: "#666", marginTop: 3 },
+  livestockCard: { borderColor: "#8D6E63" },
+  quantity: { fontSize: 14, color: "#333", marginTop: 2 },
+  livestockInfo: { fontSize: 13, color: "#795548" },
   removeBtn: { fontSize: 20, color: "#E53935" },
   empty: { textAlign: "center", marginTop: 20, color: "#888" },
   backText: { marginTop: 15, color: "#4CAF50", textAlign: "center" },
+  postBtn: {
+    backgroundColor: "#4CAF50",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 6,
+    marginRight: 0,
+  },
+  postBtnText: { color: "#fff", fontWeight: "bold", fontSize: 18 },
+  backBottomBtn: {
+    marginTop: 15,
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#4CAF50",
+  },
+  backText: {
+    color: "#4CAF50",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });
+
