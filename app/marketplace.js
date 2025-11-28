@@ -12,6 +12,7 @@ export default function Marketplace() {
 
   const menuItems = [
     { title: "🛍️ My Products", route: "/products" },
+    { title: " +  Post Products", route: "/postproduct" },
     { title: "🚚 Logistics", route: "/logistics" },
     { title: "💰 Wallet", route: "/wallet" },
     { title: "💬 Community", route: "/community" },
