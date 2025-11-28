@@ -2,7 +2,7 @@ import { addDoc, collection, getDocs } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../firebaseConfig";
 
-export async function addProduct({ image_url, name, category, status, price, price_unit, quantity, quantity_unit, desc, breed, age, gender, createdAt }) {
+export async function addProduct({ image_url, name, category, status, price, price_unit, quantity, quantity_unit, desc, breed, age, gender, createdAt,user_id }) {
   await addDoc(collection(db, "products"), {
     image_url,
     name,
@@ -17,6 +17,7 @@ export async function addProduct({ image_url, name, category, status, price, pri
     age,
     gender,
     createdAt,
+    user_id,
   });
 }
 

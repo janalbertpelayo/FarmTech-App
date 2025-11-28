@@ -4,8 +4,15 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { addProduct } from "../services/productService";
+import * as ImagePicker from "expo-image-picker";
+import { uploadProductImage } from "../services/productService";
+import { getAuth } from "firebase/auth";
+const auth = getAuth();
+
 
 export default function PostProduct() {
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
   const [category, setCategory] = useState("Crop");
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -13,6 +20,7 @@ export default function PostProduct() {
   const [price, setPrice] = useState("");
   const [priceUnit, setPriceUnit] = useState("kg");
   const [desc, setDesc] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
   // Livestock-specific fields
   const [breed, setBreed] = useState("");
   const [age, setAge] = useState("");
@@ -25,6 +33,26 @@ export default function PostProduct() {
   const livestockUnits = ["head", "pair"];
   const unitOptions = category === "Crop" ? cropUnits : category === "Meat" ? meatUnits : livestockUnits;
 
+  const pickImage = async () => {
+  const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (!permission.granted) {
+    alert("Permission required to access photos.");
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 0.8,
+  });
+
+  if (!result.canceled) {
+    setSelectedImage(result.assets[0].uri);
+  }
+};
+
   const handlePost = async () => {
     if (!name || !price || !quantity || (category === "Livestock" && (!breed || !age || !gender))) {
       alert("⚠️ Please fill all fields.");
@@ -32,14 +60,16 @@ export default function PostProduct() {
     }
 
     try {
-      // Upload image and get URL (replace with your image picker logic)
-      // For now, use a placeholder image
-      const imageUrl = "https://via.placeholder.com/100";
-      // If you have an image picker, use:
-      // const imageUrl = await uploadProductImage(selectedImageFile, name);
+      let imageUrl = "https://via.placeholder.com/100"; // Default placeholder
+
+      if (selectedImage) {
+        const file = await fetch(selectedImage);
+        const blob = await file.blob();
+        imageUrl = await uploadProductImage(blob, name);
+      }
 
       await addProduct({
-        image_url: imageUrl,
+        image_url: imageUrl || null,
         name,
         category,
         status: "available",
@@ -48,8 +78,11 @@ export default function PostProduct() {
         quantity,
         quantity_unit: quantityUnit,
         desc,
-        ...(category === "Livestock" && { breed, age, gender }),
+        breed: category === "Livestock" ? breed : "N/A",
+        age: category === "Livestock" ? age : "N/A",
+        gender: category === "Livestock" ? gender : "N/A",
         createdAt: new Date(),
+        user_id: currentUser?.uid,
       });
 
       alert(`✅ ${category} posted: ${name}`);
@@ -101,10 +134,19 @@ export default function PostProduct() {
         </TouchableOpacity>
       </View>
 
-      <Image
-        source={require("../assets/images/logo.png")}
-        style={styles.image}
-      />
+      <TouchableOpacity onPress={pickImage}>
+        {selectedImage ? (
+          <Image
+            source={{ uri: selectedImage }}
+            style={styles.image}
+          />
+        ) : (
+          <View style={[styles.image, styles.uploadBox]}>
+            <Text style={styles.uploadText}>Upload Photo</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
 
       <TextInput
         style={styles.input}
@@ -260,6 +302,17 @@ const styles = StyleSheet.create({
   color: "#4CAF50",
   fontWeight: "bold",
   fontSize: 16,
+  },
+  uploadBox: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    backgroundColor: "#f8f8f8",
+  },
+  uploadText: {
+    color: "#888",
+    fontSize: 16,
   },
 });
 

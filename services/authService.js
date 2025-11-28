@@ -3,7 +3,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 
 // Signup function
-export async function signup({ email, password, username, fname, lname, address }) {
+export async function signup({ email, password, username, fname, lname, address, contact, description, pfp }) {
   // Create user in Firebase Auth
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   const user = userCredential.user;
@@ -15,6 +15,9 @@ export async function signup({ email, password, username, fname, lname, address 
     fname,
     lname,
     address,
+    contact,        
+    description, 
+    pfp,          
   });
 }
 

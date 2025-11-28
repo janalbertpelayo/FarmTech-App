@@ -1,4 +1,4 @@
-// app/products.tsx
+// app/products.js
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -67,7 +67,7 @@ export default function Products() {
             item.category === "Meat" && styles.meatCard,
             item.category === "Livestock" && styles.livestockCard
           ]}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image source={{ uri: item.image_url || "https://via.placeholder.com/100" }} style={styles.image} />
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.quantity}>Qty: {item.quantity}</Text>
