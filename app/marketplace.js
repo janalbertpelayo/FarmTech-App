@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   cartBtn: {
     marginLeft: 10,
     padding: 8,
-    backgroundColor: '#31c036ff',
+    backgroundColor: '#82f14e67',
     borderRadius: 8,
   },
   cartBtnText: {
