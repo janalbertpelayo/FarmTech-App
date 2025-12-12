@@ -1,16 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 export default function Dashboard() {
   const router = useRouter();
 
   const menu = [
-    { title: "🛒 Marketplace", route: "/marketplace", color: "#4CAF50" }, // NEW
-    { title: "🛍️ My Products", route: "/products", color: "#4CAF50" },
-    { title: "🚚 Logistics", route: "/logistics", color: "#4CAF50" },
-    { title: "💰 Wallet", route: "/wallet", color: "#4CAF50" },
-    { title: "💬 Community", route: "/community", color: "#4CAF50" },
-    { title: "👤 Profile", route: "/profile", color: "#4CAF50" },
+    { title: "🛒 Marketplace", route: "/marketplace", color: "#4CAF50" }, 
   ];
 
   const handleLogout = () => {
@@ -30,7 +25,7 @@ export default function Dashboard() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🌾 FarmTech Kiosk</Text>
+      <Text style={styles.title}>🌾 FarmTech 🌾</Text>
       <Text style={styles.subtitle}>Connecting Farmers to Markets</Text>
 
       {menu.map((item, index) => (

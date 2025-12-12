@@ -1,14 +1,14 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Wallet() {
   const router = useRouter();
 
   const [balance, setBalance] = useState(15200.75);
   const [transactions, setTransactions] = useState([
-    { id: 2, type: "Sale - Corn (5kg)", amount: 320, date: "Oct 2, 2025" },
-    { id: 3, type: "Sale - Pork Liempo (1kg)", amount: 280, date: "Oct 4, 2025" },
+    { id: 2, type: "No Orders Yet" },
+  
   ]);
 
   const addFunds = () => {
@@ -21,15 +21,9 @@ export default function Wallet() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>💰 My Wallet</Text>
-      <Text style={styles.balanceLabel}>Current Balance</Text>
-      <Text style={styles.balance}>₱{balance.toFixed(2)}</Text>
+      <Text style={styles.title}>💰 My Orders</Text>
 
-      <TouchableOpacity style={styles.addButton} onPress={addFunds}>
-        <Text style={styles.addButtonText}>+ Add Demo ₱1000</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.subtitle}>Transaction History</Text>
+      <Text style={styles.subtitle}>Order History</Text>
       <FlatList
         data={transactions}
         keyExtractor={(item) => item.id.toString()}

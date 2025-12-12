@@ -14,7 +14,7 @@ export default function Welcome() {
         resizeMode="contain"
       />
 
-      <Text style={styles.title}>🌾 FarmTech Kiosk</Text>
+      <Text style={styles.title}>🌾 FarmTech 🌾</Text>
       <Text style={styles.subtitle}>Connecting Farmers to Markets</Text>
 
       <TouchableOpacity
@@ -22,7 +22,7 @@ export default function Welcome() {
         onPress={() => router.push("/login")}
         style={styles.startButton}
       >
-        <Text style={styles.startText}>👉 Touch to Start</Text>
+        <Text style={styles.startText}>👉 Start Order</Text>
       </TouchableOpacity>
 
       <Text style={styles.footer}>Powered by FarmTech Solution</Text>

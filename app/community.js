@@ -1,54 +1,62 @@
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Community() {
   const router = useRouter();
 
-  const [posts, setPosts] = useState([
-    { id: 1, author: "Farmer Juan", text: "Any tips for storing corn longer?" },
-    { id: 2, author: "Farmer Maria", text: "Our coop is selling organic feeds at discount!" },
-    { id: 3, author: "Admin", text: "🌾 Join the harvest festival this October 10!" },
+  const [messages, setMessages] = useState([
+    { id: 1, sender: "Seller Juan", text: "Hello! How can I help you today?" },
+    { id: 2, sender: "You", text: "Hi, I’m interested in buying corn. Is it still available?" },
+    { id: 3, sender: "Seller Juan", text: "Yes! I have fresh stock from yesterday’s harvest." },
+    { id: 4, sender: "You", text: "Great! How much per kilo?" },
+    { id: 5, sender: "Seller Juan", text: "₱35 per kilo." },
   ]);
-  const [newPost, setNewPost] = useState("");
 
-  const handlePost = () => {
-    if (!newPost.trim()) return;
-    const post = { id: Date.now(), author: "You", text: newPost };
-    setPosts([post, ...posts]);
-    setNewPost("");
+  const [newText, setNewText] = useState("");
+
+  const handleSend = () => {
+    if (!newText.trim()) return;
+    const msg = { id: Date.now(), sender: "You", text: newText };
+    setMessages([...messages, msg]);
+    setNewText("");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>💬 Farmer Community</Text>
+      <Text style={styles.title}>💬 Chat with Seller</Text>
 
-      <View style={styles.inputRow}>
-        <TextInput
-          style={styles.input}
-          placeholder="Share something..."
-          value={newPost}
-          onChangeText={setNewPost}
-        />
-        <TouchableOpacity style={styles.postBtn} onPress={handlePost}>
-          <Text style={styles.postText}>Post</Text>
-        </TouchableOpacity>
-      </View>
-
+      {/* Chat List */}
       <FlatList
-        data={posts}
+        data={messages}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.postCard}>
-            <Text style={styles.author}>{item.author}</Text>
-            <Text>{item.text}</Text>
+          <View
+            style={[
+              styles.messageBubble,
+              item.sender === "You" ? styles.myBubble : styles.theirBubble,
+            ]}
+          >
+            <Text style={styles.sender}>
+              {item.sender === "You" ? "You" : item.sender}
+            </Text>
+            <Text style={styles.messageText}>{item.text}</Text>
           </View>
         )}
       />
 
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.backText}>⬅ Back</Text>
-      </TouchableOpacity>
+      {/* Input Row */}
+      <View style={styles.inputRow}>
+        <TextInput
+          style={styles.input}
+          placeholder="Type a message..."
+          value={newText}
+          onChangeText={setNewText}
+        />
+        <TouchableOpacity style={styles.sendBtn} onPress={handleSend}>
+          <Text style={styles.sendText}>Send</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -56,7 +64,33 @@ export default function Community() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
   title: { fontSize: 24, fontWeight: "bold", color: "#2E7D32", marginBottom: 10 },
-  inputRow: { flexDirection: "row", marginBottom: 15 },
+
+  // Chat bubbles
+  messageBubble: {
+    padding: 10,
+    marginVertical: 5,
+    maxWidth: "80%",
+    borderRadius: 10,
+  },
+  myBubble: {
+    backgroundColor: "#d3f8d3",
+    alignSelf: "flex-end",
+    borderTopRightRadius: 0,
+  },
+  theirBubble: {
+    backgroundColor: "#e8e8e8",
+    alignSelf: "flex-start",
+    borderTopLeftRadius: 0,
+  },
+  sender: {
+    fontWeight: "bold",
+    marginBottom: 2,
+    color: "#388e3c",
+  },
+  messageText: { fontSize: 15 },
+
+  // Input row
+  inputRow: { flexDirection: "row", marginTop: 10 },
   input: {
     flex: 1,
     borderWidth: 1,
@@ -65,15 +99,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 8,
   },
-  postBtn: { backgroundColor: "#4CAF50", paddingHorizontal: 15, justifyContent: "center", borderRadius: 8 },
-  postText: { color: "#fff", fontWeight: "bold" },
-  postCard: {
-    borderWidth: 1,
-    borderColor: "#ccc",
+  sendBtn: {
+    backgroundColor: "#4CAF50",
+    paddingHorizontal: 18,
+    justifyContent: "center",
     borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
   },
-  author: { fontWeight: "bold", marginBottom: 3, color: "#2E7D32" },
-  backText: { marginTop: 20, color: "#4CAF50", textAlign: "center" },
+  sendText: { color: "#fff", fontWeight: "bold" },
+
+  // Bottom center back button
+  backWrapper: {
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  backText: {
+    color: "#4CAF50",
+    fontWeight: "bold",
+    paddingVertical: 10,
+  },
 });
