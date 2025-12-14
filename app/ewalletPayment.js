@@ -1,19 +1,19 @@
 // app/ewalletPayment.js
-import { useRouter, useSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function EwalletPayment() {
   const router = useRouter();
-  const params = useSearchParams();
+  const params = useLocalSearchParams();
 
   // parse data from Cart.js
   const cart = params.cart ? JSON.parse(params.cart) : [];
@@ -33,13 +33,22 @@ export default function EwalletPayment() {
   useEffect(() => {
     if (params.scanned) {
       setScannedData(params.scanned);
+      // Do NOT reset accountName/accountNumber here
     }
   }, [params.scanned]);
 
   const handleScan = () => {
     router.push({
       pathname: "/qrScanner",
-      params: { returnTo: "/ewalletPayment" },
+      params: {
+        returnTo: "/ewalletPayment",
+        accountName,
+        accountNumber,
+        cart: params.cart,
+        total: params.total,
+        address: params.address,
+        paymentMethod: params.paymentMethod,
+      },
     });
   };
 
@@ -56,8 +65,8 @@ export default function EwalletPayment() {
   };
 
   const handleContinue = () => {
-    // Navigate to a success or logistics page
-    router.push({ pathname: "/paymentSuccess", params: { address } });
+    // Navigate to the marketplace screen after payment
+    router.push("/marketplace");
   };
 
   return (
